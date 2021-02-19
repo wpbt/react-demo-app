@@ -4,6 +4,7 @@ const Like = ({onLike, movie}) => {
             onClick={() => onLike(movie)}
             style={{cursor: 'pointer'}}
             className={ movie.liked ? "fa fa-heart": "fa fa-heart-o" }
+            aria-hidden="true"
         >
         </i>
     );
