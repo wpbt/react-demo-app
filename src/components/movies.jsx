@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getMovies, deleteMovie } from '../services/fakeMovieService';
+import { getMovies } from '../services/fakeMovieService';
 
 class Movies extends Component {
     state = {
@@ -7,10 +7,10 @@ class Movies extends Component {
     };
     render() { 
         const { movies } = this.state;
-        if(movies.length === 0) return <p>No movies!</p>
+        if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
             <React.Fragment>
-                <p>{movies.length} movies</p>
+                <div className="mt-2 alert alert-info" role="alert">{movies.length} movies</div>
                 <table className="table">
                     <thead>
                         <tr>
@@ -47,10 +47,9 @@ class Movies extends Component {
         );
     }
     handleDelete = (movie) => {
-        console.log(`Delete movie: `, movie._id);
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         this.setState({movies});
     };
 }
- 
+
 export default Movies;
