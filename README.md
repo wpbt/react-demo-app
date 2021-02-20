@@ -12,3 +12,9 @@
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+#### node and npm version used
+
+`node: 12.14.0`
+
+`npm: .14.8`

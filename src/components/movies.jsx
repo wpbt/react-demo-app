@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import { getMovies } from '../services/fakeMovieService';
 import Like from './common/like';
+import Pagination from './common/pagination';
+import _ from 'lodash';
 
 class Movies extends Component {
+    
     state = {
-        movies: getMovies()
+        movies: getMovies(),
+        pageSize: 4,
+        currentPage: 1
     };
+
     render() { 
-        const { movies } = this.state;
+        const { movies, pageSize, currentPage } = this.state;
+        let filteredMovies = _.chunk(movies,pageSize);
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
             <React.Fragment>
@@ -44,6 +51,12 @@ class Movies extends Component {
                         ))}
                     </tbody>
                 </table>
+                <Pagination 
+                    movieItems={movies}
+                    pageSize={pageSize}
+                    currentPage={currentPage}
+                    onPageChange={this.handlePageChange}
+                />
             </React.Fragment>
         );
     }
@@ -57,6 +70,10 @@ class Movies extends Component {
         movies[index] = {...movies[index]};
         movies[index].liked = !movies[index].liked;
         this.setState({movies});
+    };
+    handlePageChange = page => {
+        console.log('page number: ', page);
+        this.setState({currentPage: page});
     };
 }
 
