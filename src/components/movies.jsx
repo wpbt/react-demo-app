@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getMovies } from '../services/fakeMovieService';
 import Like from './common/like';
 import Pagination from './common/pagination';
-import _ from 'lodash';
+import { paginate } from '../library/paginate';
 
 class Movies extends Component {
     
@@ -14,7 +14,7 @@ class Movies extends Component {
 
     render() { 
         const { movies, pageSize, currentPage } = this.state;
-        let filteredMovies = _.chunk(movies,pageSize);
+        let filteredMovies = paginate(movies, currentPage, pageSize);
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
             <React.Fragment>
@@ -31,7 +31,7 @@ class Movies extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {movies.map( m =>(    
+                        {filteredMovies.map( m =>(    
                             <tr key={m._id}>
                                 <td>{m.title}</td>
                                 <td>{m.genre.name}</td>
@@ -52,7 +52,7 @@ class Movies extends Component {
                     </tbody>
                 </table>
                 <Pagination 
-                    movieItems={movies}
+                    movieItems={movies.length}
                     pageSize={pageSize}
                     currentPage={currentPage}
                     onPageChange={this.handlePageChange}
@@ -62,7 +62,10 @@ class Movies extends Component {
     }
     handleDelete = movie => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
-        this.setState({movies});
+        const pageNum = (movies.length) / (this.state.pageSize);
+        const pageSize = Math.ceil(pageNum);
+        const currentPage = pageSize;
+        this.setState({movies, currentPage});
     };
     handleLike = movie => {
         const movies = [...this.state.movies];
@@ -72,7 +75,6 @@ class Movies extends Component {
         this.setState({movies});
     };
     handlePageChange = page => {
-        console.log('page number: ', page);
         this.setState({currentPage: page});
     };
 }

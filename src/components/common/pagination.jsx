@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 const Pagination = ({ movieItems, pageSize, currentPage, onPageChange }) => {
     
-    const pageNumberArray = _.range(1, ( Math.ceil(movieItems.length / pageSize) + 1) );
+    const pageNumberArray = _.range(1, ( Math.ceil(movieItems / pageSize) + 1) );
     if(pageNumberArray.length === 1) return null;
 
     return( 
