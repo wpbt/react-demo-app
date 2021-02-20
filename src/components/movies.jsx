@@ -64,7 +64,9 @@ class Movies extends Component {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         const pageNum = (movies.length) / (this.state.pageSize);
         const pageSize = Math.ceil(pageNum);
-        const currentPage = pageSize;
+        const currentPage = this.state.currentPage < pageSize ? this.state.currentPage : pageSize;
+        console.log('current page after delete handle',currentPage);
+        console.log('current page before delete handle',this.state.currentPage);
         this.setState({movies, currentPage});
     };
     handleLike = movie => {
