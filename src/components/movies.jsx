@@ -18,7 +18,6 @@ class Movies extends Component {
 
     render() { 
         const { movies, pageSize, currentPage, genres, selectedGenre } = this.state;
-        // let genreMovies = '';
         let filteredMovies = paginate(movies, currentPage, pageSize);
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
@@ -113,7 +112,6 @@ class Movies extends Component {
         this.setState({currentPage: page});
     };
     handleGenreChange = genre => {
-        console.log(genre);
         let movies = [...getMovies()];
         movies = movies.filter(movie => {
             return movie.genre.name === genre.name;
