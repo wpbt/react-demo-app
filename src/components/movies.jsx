@@ -17,14 +17,20 @@ class Movies extends Component {
         currentPage: 1,
         selectedGenre: ''
     };
-
-    render() { 
-        const { movies, pageSize, currentPage, genres, selectedGenre, sortColumn } = this.state;
-
+    getFilteredData = () => {
+        const { movies, pageSize, currentPage, sortColumn } = this.state;
         const sortedMovies = _.orderBy(movies, [sortColumn.path], [sortColumn.order]);
         let filteredMovies = paginate(sortedMovies, currentPage, pageSize);
 
+        return { filteredMovies: filteredMovies}
+    };
+    render() { 
+        const { movies, pageSize, currentPage, genres, selectedGenre, sortColumn } = this.state;
+
+        const {filteredMovies} = this.getFilteredData();
+        
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
+
         return (
             <React.Fragment>
                 <div className="row align-items-top mt-2">
@@ -88,8 +94,7 @@ class Movies extends Component {
         const selectedGenre = genre;
         this.setState({movies, currentPage: 1, selectedGenre});
     };
-    handleSort = sortColumn => {
-        
+    handleSort = sortColumn => {     
         this.setState({sortColumn});
     };
 }
