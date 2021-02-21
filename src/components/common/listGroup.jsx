@@ -1,22 +1,26 @@
 import PropTypes from 'prop-types';
 
-const ListGroup = ({genres, onGenreChange}) => {
-    console.log(genres);
+const ListGroup = ({genres, textProperty, valueProperty, onGenreChange, selectedGenre}) => {
     return (
         <ul className="list-group">
             {genres.map(genre => (
                 <li 
-                    key={genre._id}
-                    className="list-group-item"
+                    key={genre[valueProperty]}
+                    className={genre === selectedGenre ? "list-group-item active" : "list-group-item"}
                     style={{cursor: 'pointer'}}
                     onClick={()=>onGenreChange(genre)}
                 >
-                    {genre.name}
+                    {genre[textProperty]}
                 </li>
             ) )}
         </ul>
     );
 }
+
+ListGroup.defaultProps = {
+    valueProperty: '_id',
+    textProperty: 'name'
+};
 ListGroup.propTypes = {
     genres: PropTypes.array.isRequired,
     onGenreChange: PropTypes.func.isRequired

@@ -9,14 +9,16 @@ import { getGenres } from '../services/fakeGenreService';
 class Movies extends Component {
     
     state = {
-        movies: getMovies(),
+        movies: [],
+        genres: [],
         pageSize: 4,
         currentPage: 1,
-        genres: getGenres()
+        selectedGenre: ''
     };
 
     render() { 
-        const { movies, pageSize, currentPage, genres } = this.state;
+        const { movies, pageSize, currentPage, genres, selectedGenre } = this.state;
+        // let genreMovies = '';
         let filteredMovies = paginate(movies, currentPage, pageSize);
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
@@ -26,6 +28,7 @@ class Movies extends Component {
                     <div className="col-3 mt-2">
                         <ListGroup
                             genres={genres}
+                            selectedGenre={selectedGenre}
                             onGenreChange={this.handleGenreChange}
                         />
                     </div>
@@ -87,6 +90,11 @@ class Movies extends Component {
             </React.Fragment>
         );
     }
+
+    componentDidMount(){
+        const genres = [{_id: '123', name: 'All Genres'}, ...getGenres()]
+        this.setState({ movies: getMovies(), genres });
+    }
     handleDelete = movie => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         const pageNum = (movies.length) / (this.state.pageSize);
@@ -105,7 +113,16 @@ class Movies extends Component {
         this.setState({currentPage: page});
     };
     handleGenreChange = genre => {
-        console.log('Genre Changed: ', genre);
+        console.log(genre);
+        let movies = [...getMovies()];
+        movies = movies.filter(movie => {
+            return movie.genre.name === genre.name;
+        });
+        if(genre.name == 'All Genres'){
+            movies = [...getMovies()];
+        }
+        const selectedGenre = genre;
+        this.setState({movies, currentPage: 1, selectedGenre});
     };
 }
 
