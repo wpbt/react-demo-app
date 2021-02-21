@@ -5,6 +5,7 @@ import { paginate } from '../library/paginate';
 import ListGroup from './common/listGroup';
 import MoviesTable from './moviesTable';
 import { getGenres } from '../services/fakeGenreService';
+import _ from 'lodash';
 
 class Movies extends Component {
     
@@ -12,18 +13,21 @@ class Movies extends Component {
         movies: [],
         genres: [],
         pageSize: 4,
+        sortColumn: { path: 'title', order: 'asc' },
         currentPage: 1,
         selectedGenre: ''
     };
 
     render() { 
-        const { movies, pageSize, currentPage, genres, selectedGenre } = this.state;
-        let filteredMovies = paginate(movies, currentPage, pageSize);
+        const { movies, pageSize, currentPage, genres, selectedGenre, sortColumn } = this.state;
+
+        const sortedMovies = _.orderBy(movies, [sortColumn.path], [sortColumn.order]);
+        let filteredMovies = paginate(sortedMovies, currentPage, pageSize);
+
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
             <React.Fragment>
                 <div className="row align-items-top mt-2">
-
                     <div className="col-3 mt-2">
                         <ListGroup
                             genres={genres}
@@ -31,26 +35,22 @@ class Movies extends Component {
                             onGenreChange={this.handleGenreChange}
                         />
                     </div>
-                    
                     <div className="col">
-                
-                        <div className="mt-2 alert alert-info" role="alert">{movies.length} movies</div>
-                        
+                        <div className="mt-2 alert alert-info" role="alert">{movies.length} movies</div>                        
                         <MoviesTable
                             filteredMovies={filteredMovies}
+                            sortColumn={sortColumn}
                             onLike={this.handleLike}
                             onDelete={this.handleDelete}
+                            onSort={this.handleSort}
                         />
-                        
                         <Pagination 
                             movieItems={movies.length}
                             pageSize={pageSize}
                             currentPage={currentPage}
                             onPageChange={this.handlePageChange}
                         />
-
                     </div>
-
                 </div>
             </React.Fragment>
         );
@@ -87,6 +87,10 @@ class Movies extends Component {
         }
         const selectedGenre = genre;
         this.setState({movies, currentPage: 1, selectedGenre});
+    };
+    handleSort = sortColumn => {
+        
+        this.setState({sortColumn});
     };
 }
 
