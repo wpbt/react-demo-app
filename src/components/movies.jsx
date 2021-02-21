@@ -3,60 +3,87 @@ import { getMovies } from '../services/fakeMovieService';
 import Like from './common/like';
 import Pagination from './common/pagination';
 import { paginate } from '../library/paginate';
+import ListGroup from './common/listGroup';
+import { getGenres } from '../services/fakeGenreService';
 
 class Movies extends Component {
     
     state = {
         movies: getMovies(),
         pageSize: 4,
-        currentPage: 1
+        currentPage: 1,
+        genres: getGenres()
     };
 
     render() { 
-        const { movies, pageSize, currentPage } = this.state;
+        const { movies, pageSize, currentPage, genres } = this.state;
         let filteredMovies = paginate(movies, currentPage, pageSize);
         if(movies.length === 0) return (<div className="mt-2 alert alert-warning" role="alert">No movies!</div>);
         return (
             <React.Fragment>
-                <div className="mt-2 alert alert-info" role="alert">{movies.length} movies</div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Genre</th>
-                            <th scope="col">Stock</th>
-                            <th scope="col">Rate</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredMovies.map( m =>(    
-                            <tr key={m._id}>
-                                <td>{m.title}</td>
-                                <td>{m.genre.name}</td>
-                                <td>{m.numberInStock}</td>
-                                <td>{m.dailyRentalRate}</td>
-                                <td><Like onLike={this.handleLike} movie={m} /></td>
-                                <td>
-                                    <button 
-                                        className="btn btn-danger"
-                                        type="button"
-                                        onClick={() => this.handleDelete(m)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <Pagination 
-                    movieItems={movies.length}
-                    pageSize={pageSize}
-                    currentPage={currentPage}
-                    onPageChange={this.handlePageChange}
-                />
+                <div className="row align-items-top mt-2">
+
+                    <div className="col-3 mt-2">
+                        <ListGroup
+                            genres={genres}
+                            onGenreChange={this.handleGenreChange}
+                        />
+                    </div>
+                    
+                    <div className="col">
+                
+                        <div className="mt-2 alert alert-info" role="alert">{movies.length} movies</div>
+                        
+                        <table className="table">
+                            
+                            <thead>
+                                
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Genre</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Rate</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+
+                            </thead>
+                            
+                            <tbody>
+                                
+                                {filteredMovies.map( m =>(    
+                                    <tr key={m._id}>
+                                        <td>{m.title}</td>
+                                        <td>{m.genre.name}</td>
+                                        <td>{m.numberInStock}</td>
+                                        <td>{m.dailyRentalRate}</td>
+                                        <td><Like onLike={this.handleLike} movie={m} /></td>
+                                        <td>
+                                            <button 
+                                                className="btn btn-danger"
+                                                type="button"
+                                                onClick={() => this.handleDelete(m)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+
+                            </tbody>
+
+                        </table>
+                        
+                        <Pagination 
+                            movieItems={movies.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={this.handlePageChange}
+                        />
+
+                    </div>
+
+                </div>
             </React.Fragment>
         );
     }
@@ -76,6 +103,9 @@ class Movies extends Component {
     };
     handlePageChange = page => {
         this.setState({currentPage: page});
+    };
+    handleGenreChange = genre => {
+        console.log('Genre Changed: ', genre);
     };
 }
 
