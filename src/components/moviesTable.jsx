@@ -1,32 +1,48 @@
 import React, { Component } from 'react';
 import Like from './common/like';
+import TableHeader from './common/tableHeader';
+import TableBody from './common/tableBody';
 
 class MoviesTable extends Component {
-    raiseSort = path => {
-        const sortColumn = { ...this.props.sortColumn };
-        if(path === sortColumn.path){
-            sortColumn.order = sortColumn.order === 'asc' ? 'desc' : 'asc';
-        } else {
-            sortColumn.path = path;
-            sortColumn.order = 'asc';
+    
+    columns = [
+        {path: 'title', label: 'Title'},
+        {path: 'genre.name', label: 'Genre'},
+        {path: 'numberInStock', label: 'Stock'},
+        {path: 'dailyRentalRate', label: 'Rate'},
+        {
+            key: 'like',
+            content: movie => (
+                <Like onLike={this.props.onLike} movie={movie} />
+            )
+        },
+        {
+            key: 'delete',
+            content: movie => (
+                <button 
+                    className="btn btn-danger"
+                    type="button"
+                    onClick={() => this.props.onDelete(movie)}
+                >
+                    Delete
+                </button>
+            )
         }
-        this.props.onSort(sortColumn);
-    };
+    ];
     render() { 
-        const {filteredMovies, onLike, onDelete} = this.props;
+        const {filteredMovies, sortColumn, onSort} = this.props;
         return (
-            <table className="table">                 
-                <thead>
-                    <tr>
-                        <th onClick={() => this.raiseSort('title')} scope="col">Title</th>
-                        <th onClick={() => this.raiseSort('genre.name')} scope="col">Genre</th>
-                        <th onClick={() => this.raiseSort('numberInStock')} scope="col">Stock</th>
-                        <th onClick={() => this.raiseSort('dailyRentalRate')} scope="col">Rate</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <table className="table">
+                <TableHeader
+                    columns={this.columns}
+                    sortColumn={sortColumn}
+                    onSort={onSort}
+                />
+                <TableBody
+                    data={filteredMovies}
+                    columns={this.columns}
+                />               
+                {/* <tbody>
                     {filteredMovies.map( m =>(    
                         <tr key={m._id}>
                             <td>{m.title}</td>
@@ -45,7 +61,7 @@ class MoviesTable extends Component {
                             </td>
                         </tr>
                     ))}
-                </tbody>
+                </tbody> */}
             </table>                 
         );
     }
